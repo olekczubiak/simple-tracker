@@ -1,7 +1,7 @@
 Oprogramowanie do monitorowania i analizy ruchu pojazdów w obszarze zamkniętym
 ===
 ![info](https://img.shields.io/badge/Praca%20dyplomowa-w%20toku-green)
-![updated](https://img.shields.io/eclipse-marketplace/last-update/olekczubiak/Praca-dyplomowa/)
+<!-- ![updated](https://img.shields.io/eclipse-marketplace/last-update/:olekczubiak/Praca-dyplomowa/) -->
 
 ## Plan pracy
 
