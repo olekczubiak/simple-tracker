@@ -1,0 +1,1 @@
+#zapisuje lokalnie na dysku, drogę przebytą
