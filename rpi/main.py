@@ -1,9 +1,11 @@
-
 import serial
 import time
 import string
 import pynmea2
 import datetime
+import saver
+
+TODAY_DATE = str(datetime.datetime.now())
 
 while True:
 	port="/dev/ttyAMA0"
@@ -15,6 +17,7 @@ while True:
 		newmsg=pynmea2.parse(newdata)
 		lat=newmsg.latitude
 		lng=newmsg.longitude
-                date = datetime.datetime.now()
-                gps = "Date= " + str(date) + " and Latitude=" + str(lat) + " and Longitude=" + str(lng)
+		date = str(datetime.datetime.now())
+		gps = "Date= " + date + " and Latitude=" + str(lat) + " and Longitude=" + str(lng)
+		saver.save_to_file(TODAY_DATE[:10], saver.data_to_save(date[11:19], lat, lng))
 		print(gps)
