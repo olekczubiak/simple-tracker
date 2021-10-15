@@ -17,7 +17,8 @@ while True:
 		newmsg=pynmea2.parse(newdata)
 		lat=newmsg.latitude
 		lng=newmsg.longitude
+		speed = newmsg.spd_over_grnd
 		date = str(datetime.datetime.now())
-		gps = "Date= \x1b[2;34;40m" + date + "\x1b[0m and Latitude=\x1b[3;31;40m" + str(lat) + "\x1b[0m and Longitude=\x1b[3;31;40m" + str(lng) + "\x1b[0m"
+		gps = "Date=\x1b[2;34;40m" + date + "\x1b[0m and Latitude=\x1b[3;31;40m" + str(lat) + "\x1b[0m and Longitude=\x1b[3;31;40m" + str(lng) + "\x1b[0m Speed=\x1b[1;33;40m" + str(speed) + "\x1b[0m"
 		saver.save_to_file(TODAY_DATE[:10], saver.data_to_save(date[11:19], lat, lng))
 		print(gps)
