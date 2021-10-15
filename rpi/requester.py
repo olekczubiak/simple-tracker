@@ -1,1 +1,3 @@
-#wysyła do API drogę przebytą
+
+def send_data():
+    pass
