@@ -18,6 +18,6 @@ while True:
 		lat=newmsg.latitude
 		lng=newmsg.longitude
 		date = str(datetime.datetime.now())
-		gps = "Date= " + date + " and Latitude=" + str(lat) + " and Longitude=" + str(lng)
+		gps = "Date= \x1b[2;34;40m" + date + "\x1b[0m and Latitude=\x1b[3;31;40m" + str(lat) + "\x1b[0m and Longitude=\x1b[3;31;40m" + str(lng) + "\x1b[0m"
 		saver.save_to_file(TODAY_DATE[:10], saver.data_to_save(date[11:19], lat, lng))
 		print(gps)
