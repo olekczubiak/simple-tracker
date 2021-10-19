@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+
 from pydantic import BaseModel
 
 
@@ -20,10 +21,12 @@ async def root():
     LIVE_POZ = "0000:0000:00000"
     return {"message": f"Live poz is {app.simple_db[-1]}"}
 
-@app.post("/add")
+@app.post("/add", status_code=status.HTTP_201_CREATED)
 async def send_poz(poz: Position):
-    print(f"Dodanie nowego rekordu {poz}")
-    app.simple_db.append(poz)
+    if poz in app.simple_db:
+        raise HTTPException(status_code=409, detail="Conflict")
+    else:
+        app.simple_db.append(poz)
     return poz
 
 @app.get("/list")
