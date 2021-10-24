@@ -1,4 +1,4 @@
-import requests
-
-def send_data(URL: str, my_data: dict):
-    return requests.post(URL, data=my_data)
+import os
+def send_data(data, lat, lng):
+    data = "curl -X \'POST\'   \'https://tracker.toadres.pl/add\'   -H \'accept: application/json\'   -H \'Content-Type: application/json\'   -d \'{\"time\": \"%s\", \"longitude\": \"%s\", \"latitude\": \"%s\"}\'" %(data, lat, lng)
+    return os.system(data)

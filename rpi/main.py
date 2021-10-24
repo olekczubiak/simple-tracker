@@ -25,5 +25,6 @@ while True:
 		date = str(datetime.datetime.now())
 
 		saver.save_to_file(TODAY_DATE[:10], saver.data_to_save(date[11:19], lat, lng))
-		requester.send_data(URL, {date, lat, lng})
+		requester.send_data(date[11:19], lat, lng)
+		print "\n"
 		print_data(date, lat, lng, speed)
