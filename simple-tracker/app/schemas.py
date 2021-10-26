@@ -1,6 +1,7 @@
-from sqlalchemy.sql.sqltypes import Date
 from pydantic import BaseModel
 from datetime import date
+
+from typing import Optional
 
 from uuid import UUID
 
@@ -19,7 +20,7 @@ class DeviceSchema(BaseModel):
     device_name: str
     gps_name: str
     owner_id: int
-    description: str
+    description: Optional[str]
 
     class Config:
         orm_mode = True
@@ -29,7 +30,7 @@ class DeviceSchema(BaseModel):
 class PositionSchema(BaseModel):
     # id: UUID
     owner_id: int
-    my_date: date
+    my_date: Optional[date]
     time: str
     longitude: float
     latitude: float
