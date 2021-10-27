@@ -10,7 +10,7 @@ class UserSchema(BaseModel):
     email: str
     password: str
     is_active: bool
-    company: str
+    company: Optional[str]
 
     class Config:
         orm_mode = True
@@ -24,8 +24,6 @@ class DeviceSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
 
 class PositionSchema(BaseModel):
     # id: UUID
