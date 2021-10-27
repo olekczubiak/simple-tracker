@@ -31,3 +31,9 @@ def check_user_id_exist(db: Session, my_owner_id: int):
 
 def check_if_last_time_exist(db: Session):
     return db.query(models.Position.time).order_by(models.Position.id.desc()).first()[0]
+
+def check_email_is_in_db(db: Session, email: str):
+    return db.query(models.User.email).filter(models.User.email == email).first()
+
+def check_hash_password_is_in_db(db: Session, hash_pass: str):
+    return db.query(models.User.hashed_password).filter(models.User.hashed_password == hash_pass).first()

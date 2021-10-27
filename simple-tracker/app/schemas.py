@@ -10,7 +10,7 @@ class UserSchema(BaseModel):
     email: str
     password: str
     is_active: bool
-    company: str
+    company: Optional[str]
 
     class Config:
         orm_mode = True
@@ -25,8 +25,6 @@ class DeviceSchema(BaseModel):
     class Config:
         orm_mode = True
 
-
-
 class PositionSchema(BaseModel):
     # id: UUID
     owner_id: int
@@ -37,3 +35,14 @@ class PositionSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+'''
+Making OAuth2 with Password (and hashing), Bearer with JWT tokens
+'''
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
