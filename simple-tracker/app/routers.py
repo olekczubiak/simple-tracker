@@ -1,4 +1,6 @@
 from ctypes import create_unicode_buffer
+
+from sqlalchemy.sql.functions import user
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
@@ -16,32 +18,33 @@ async def api_info():
 async def get_live_poz(
                             db: Session = Depends(get_db), 
                             token: str =  Depends(sec.oauth2_scheme)):
-    return crud.get_live_position(db)
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return crud.get_live_position(db, user_id)
 
 @router.get("/api/list")
 async def get_listed_poz(
                             db: Session = Depends(get_db), 
                             token: str =  Depends(sec.oauth2_scheme)):
-    return crud.get_position(db)
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return crud.get_position(db, user_id)
 
 @router.post("/api/add",  response_model=schemas.PositionSchema)
 async def send_poz(
                             item: schemas.PositionSchema, 
                             db: Session = Depends(get_db),
                             token: str =  Depends(sec.oauth2_scheme)):
-    if not crud.check_user_id_exist(db, item.owner_id):
-        raise HTTPException(status_code=404, detail="No owner_id found")
     if crud.check_if_last_time_exist(db) == item.time:
         raise HTTPException(status_code=409, detail="Conflict")
     else:
-        return crud.create_position(db=db, item=item)
+        user_id = crud.get_owner_id_by_token(db, my_token=token)
+        return crud.create_position(db=db, item=item, user_id=user_id)
 
-@router.get("/api/device/{owner_id}")
+@router.get("/api/device")
 async def device_info(
-                        owner_id: int, 
                         db: Session = Depends(get_db),
                         token: str =  Depends(sec.oauth2_scheme)):
-    db_query = crud.get_device_info(db, owner_id)
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    db_query = crud.get_device_info(db, user_id)
     if len(db_query) == 0:
         raise HTTPException(status_code=404, detail="No owner_id found")
     return db_query
@@ -69,7 +72,8 @@ async def login(
 async def test_token(token: str = Depends(sec.oauth2_scheme)):
     return {"the_token": token}
 
-@router.get("/test")
-async def test_root(db: Session = Depends(get_db)):
-    is_active = crud.check_is_user_active(db, email="aga")
-    print(f"owner-id = {is_active}")
+@router.get("/token/test/user-id")
+async def test_root(db: Session = Depends(get_db),
+                    token: str =  Depends(sec.oauth2_scheme)):
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return user_id
