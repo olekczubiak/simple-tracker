@@ -35,14 +35,3 @@ class PositionSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-'''
-Making OAuth2 with Password (and hashing), Bearer with JWT tokens
-'''
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
