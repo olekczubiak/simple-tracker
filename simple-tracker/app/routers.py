@@ -1,6 +1,3 @@
-from ctypes import create_unicode_buffer
-
-from sqlalchemy.sql.functions import user
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
@@ -66,6 +63,14 @@ async def login(
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token = check_credentials[0]
     return {"access_token": access_token, "token_type": "bearer", "owner_id": owner_id}
+
+
+@router.post("/user/create")
+async def create_user(user: schemas.UserSchema,db: Session = Depends(get_db)):
+    user_exist = crud.check_if_creating_user_exist(db, user.email, sec.get_password_hash(user.email, user.password))
+    if user_exist == True:
+        raise HTTPException(status_code=409, detail="Confilct")
+    return crud.create_user(db, details=user)
 
 
 @router.get("/token/test")
