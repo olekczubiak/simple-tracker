@@ -1,3 +1,4 @@
+from ctypes import create_unicode_buffer
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
@@ -48,17 +49,27 @@ async def device_info(
 @router.post("/token")
 async def login(
                         db: Session = Depends(get_db), 
-                        form_data: sec.OAuth2PasswordRequestForm = Depends()):
+                        form_data: sec.OAuth2PasswordRequestForm = Depends()
+                        ):
     check_email = crud.check_email_is_in_db(db, form_data.username)
+    owner_id = crud.get_owner_id_by_email(db, email=form_data.username)
     if check_email == None:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     check_credentials = crud.check_hash_password_is_in_db(db, sec.get_password_hash(form_data.username, form_data.password))
     if check_credentials == None:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+    is_active = crud.check_is_user_active(db, email=form_data.username)
+    if is_active == False:
+        raise HTTPException(status_code=400, detail="Inactive user")
     access_token = check_credentials[0]
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "owner_id": owner_id}
 
+
+@router.get("/token/test")
+async def test_token(token: str = Depends(sec.oauth2_scheme)):
+    return {"the_token": token}
 
 @router.get("/test")
-async def read_users_me(token: str = Depends(sec.oauth2_scheme)):
-    return {"the_token": token}
+async def test_root(db: Session = Depends(get_db)):
+    is_active = crud.check_is_user_active(db, email="aga")
+    print(f"owner-id = {is_active}")

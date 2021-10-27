@@ -15,6 +15,9 @@ def get_position(db: Session):
 def get_live_position(db: Session):
     return db.query(models.Position).all()[-1]
 
+def get_owner_id_by_email(db: Session, email: str):
+    return db.query(models.User.id).filter(models.User.email == email).first()[0]
+
 def create_position(db: Session, item: schemas.PositionSchema):
     db_item = models.Position(**item.dict())
     db.add(db_item)
@@ -37,3 +40,6 @@ def check_email_is_in_db(db: Session, email: str):
 
 def check_hash_password_is_in_db(db: Session, hash_pass: str):
     return db.query(models.User.hashed_password).filter(models.User.hashed_password == hash_pass).first()
+
+def check_is_user_active(db: Session, email: str) -> bool:
+    return db.query(models.User.is_active).filter(models.User.email == email).first()[0]
