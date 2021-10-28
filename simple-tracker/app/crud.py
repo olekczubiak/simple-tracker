@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.elements import True_
 from sqlalchemy.sql.sqltypes import Float
 
-from . import models, schemas, security
+from . import models, schemas
 
 def get_device_info(db: Session, user_id: int):
     return db.query(models.Device).filter(models.Device.owner_id == user_id).all()
@@ -55,8 +55,6 @@ def check_is_user_active(db: Session, email: str) -> bool:
 def check_if_creating_user_exist(db: Session, user_email: str, hash_pass: str) -> bool:
     email = db.query(models.User.email).filter(models.User.email == user_email).all()
     password = db.query(models.User.hashed_password).filter(models.User.hashed_password == hash_pass).all()
-    print(len(email))
-    print(len(password))
     if len(email) == 1:
         return True
     if len(email) == 0:
@@ -64,11 +62,11 @@ def check_if_creating_user_exist(db: Session, user_email: str, hash_pass: str) -
             return False
 
 
-def create_user(db: Session, details: schemas.UserSchema):
+def create_user(db: Session, details: schemas.UserSchema, hash_password: str):
     db_item = models.User(
                 id=get_last_index_of_id(db) + 1,
                 email= details.email,
-                hashed_password=security.get_password_hash(details.email, details.password),
+                hashed_password=hash_password,
                 is_active = False,
                 company = details.company
     )
