@@ -1,7 +1,9 @@
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 from .database import get_db
+from datetime import date
 from . import crud, schemas
 from . import security as sec
 
@@ -28,11 +30,21 @@ async def get_listed_poz(
 
 @router.get("/api/list/day")
 async def get_day_listed(
-                            item: schemas.PosDateSchema,
+                            day: Optional[date],
                             db: Session = Depends(get_db),
                             token: str =  Depends(sec.oauth2_scheme)):
     user_id = crud.get_owner_id_by_token(db, my_token=token)
-    return crud.get_list_poz_by_day(db, user_id=user_id, my_day=item)
+    return crud.get_list_poz_by_day(db, user_id=user_id, my_day=day)
+
+@router.get("/api/device")
+async def device_info(
+                        db: Session = Depends(get_db),
+                        token: str =  Depends(sec.oauth2_scheme)):
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    db_query = crud.get_device_info(db, user_id)
+    if len(db_query) == 0:
+        raise HTTPException(status_code=404, detail="No owner_id found")
+    return db_query
 
 @router.post("/api/add",  response_model=schemas.PositionSchema)
 async def send_poz(
@@ -44,16 +56,6 @@ async def send_poz(
     else:
         user_id = crud.get_owner_id_by_token(db, my_token=token)
         return crud.create_position(db=db, item=item, user_id=user_id)
-
-@router.get("/api/device")
-async def device_info(
-                        db: Session = Depends(get_db),
-                        token: str =  Depends(sec.oauth2_scheme)):
-    user_id = crud.get_owner_id_by_token(db, my_token=token)
-    db_query = crud.get_device_info(db, user_id)
-    if len(db_query) == 0:
-        raise HTTPException(status_code=404, detail="No owner_id found")
-    return db_query
 
 @router.post("/token")
 async def login(

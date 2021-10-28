@@ -35,9 +35,3 @@ class PositionSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-class PosDateSchema(BaseModel):
-    my_date: Optional[date]
-
-    class Config:
-        orm_mode = True
