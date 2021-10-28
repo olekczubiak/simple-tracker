@@ -23,6 +23,10 @@ def get_owner_id_by_token(db: Session, my_token: str):
 def get_last_index_of_id(db: Session) -> int:
     return db.query(models.User.id).order_by(models.User.id.desc()).first()[0]
 
+def get_list_poz_by_day(db: Session, user_id: int, my_day: str):
+    return db.query(models.Position).filter(models.Position.owner_id == user_id).filter(models.Position.my_date == my_day).all()
+
+
 def create_position(db: Session, item: schemas.PositionSchema, user_id:int):
     db_item = models.Position(
                 owner_id=user_id,

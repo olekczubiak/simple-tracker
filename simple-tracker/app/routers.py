@@ -25,6 +25,15 @@ async def get_listed_poz(
     user_id = crud.get_owner_id_by_token(db, my_token=token)
     return crud.get_position(db, user_id)
 
+
+@router.get("/api/list/day")
+async def get_day_listed(
+                            item: schemas.PosDateSchema,
+                            db: Session = Depends(get_db),
+                            token: str =  Depends(sec.oauth2_scheme)):
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return crud.get_list_poz_by_day(db, user_id=user_id, my_day=item)
+
 @router.post("/api/add",  response_model=schemas.PositionSchema)
 async def send_poz(
                             item: schemas.PositionSchema, 
