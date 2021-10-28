@@ -70,7 +70,7 @@ async def create_user(user: schemas.UserSchema,db: Session = Depends(get_db)):
     user_exist = crud.check_if_creating_user_exist(db, user.email, sec.get_password_hash(user.email, user.password))
     if user_exist == True:
         raise HTTPException(status_code=409, detail="Confilct")
-    return crud.create_user(db, details=user)
+    return crud.create_user(db, details=user, hash_password=sec.get_password_hash(user.email, user.password))
 
 
 @router.get("/token/test")
