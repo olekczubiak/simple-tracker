@@ -17,10 +17,10 @@
 import HeroImage from './HeroImage.vue'
 
 export default {
-  name: 'Claim',
-  components: {
-    HeroImage
-  }
+    name: 'Claim',
+    components: {
+        HeroImage
+    }
 }
 
 </script>
