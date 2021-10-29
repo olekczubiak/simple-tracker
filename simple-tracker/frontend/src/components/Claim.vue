@@ -9,7 +9,7 @@
         <p class="subclaim">
             Aplikacja do monitorowania i analizowania pojazdow w zdefiniowanej przestrzenii.
         </p>
-        <button class="button-28" role="button">Zaloguj się</button>
+        <router-link class="button-28" to="/login"> Zaloguj się </router-link>
     </div>
 </template>
 
@@ -17,10 +17,10 @@
 import HeroImage from './HeroImage.vue'
 
 export default {
-    name: 'Claim',
-    components: {
-        HeroImage
-    }
+  name: 'Claim',
+  components: {
+    HeroImage
+  }
 }
 
 </script>
