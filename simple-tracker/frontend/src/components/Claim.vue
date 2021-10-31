@@ -9,7 +9,8 @@
         <p class="subclaim">
             Aplikacja do monitorowania i analizowania pojazdow w zdefiniowanej przestrzenii.
         </p>
-        <router-link class="button-28" to="/login"> Zaloguj się </router-link>
+        <router-link class="button-28" to="/login"> Zaloguj się! </router-link>
+        <router-link class="button-28" to="/panel"> Panel </router-link>
     </div>
 </template>
 
@@ -67,7 +68,8 @@ export default {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
-    width: 60%;
+    margin-top: 5px;
+    width: 15%;
     will-change: transform;
     }
 

@@ -15,7 +15,10 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600,800');
-/* .{
+.wrapper{
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-family: 'Montserrat', sans-serif;
   margin: 0;
   padding: 0;
@@ -28,5 +31,6 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-} */
+}
+
 </style>
