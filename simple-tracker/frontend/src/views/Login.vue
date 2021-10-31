@@ -2,9 +2,9 @@
     <form @submit.prevent="submit">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
-        <input v-model="data.email" class="form-control" placeholder="name@example.com">
+        <input v-model="data.email" class="form-control" placeholder="name@example.com" required>
         
-        <input v-model="data.password" type="password" class="form-control" placeholder="Password">
+        <input v-model="data.password" type="password" class="form-control" placeholder="Password" required>
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
 
@@ -15,14 +15,9 @@
 import {reactive} from 'vue';
 import {useRouter} from "vue-router";
 
-const promise = new Promise((resolve, reject) => {
-  resolve('');
-});
-
 export default {
     name: "Login",
     setup() {
-
         const data = reactive({
         email: '',
         password: ''
