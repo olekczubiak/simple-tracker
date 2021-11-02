@@ -61,7 +61,7 @@ export default {
     async created() {
     const myToken = localStorage.getItem('user-token');
     // GET request using fetch with async/await
-    const getPoz = await fetch('http://localhost:8000/api/live', {
+    const getPoz = await fetch('https://tracker.toadres.pl/api/live', {
           method: 'GET',
           headers: {
             'accept': 'application/json',
@@ -74,7 +74,7 @@ export default {
     this.liveLat = data.latitude;
     this.liveLong = data.longitude;
 
-    const getDevice = await fetch('http://localhost:8000/api/device', {
+    const getDevice = await fetch('https://tracker.toadres.pl/api/device', {
           method: 'GET',
           headers: {
             'accept': 'application/json',
