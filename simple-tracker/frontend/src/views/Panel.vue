@@ -7,8 +7,8 @@
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Storna panelu:</h1>
   </div>
+  <DeviceInfo/>
   
-  <GetLivePoz/>
   </main>
 </div>
 </template>
@@ -16,13 +16,14 @@
 <script>
 import Nav from "@/components/Nav.vue"
 import SlideBar from "@/components/SlideBar.vue"
-
+import DeviceInfo from '@/components/DeviceInfo.vue'
 
 export default {
     name: 'Panel',
     components: {
       Nav,
-      SlideBar
-    },
+      SlideBar,
+      DeviceInfo
+    }
   }
 </script>
