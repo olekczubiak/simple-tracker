@@ -11,6 +11,7 @@
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
 
+        <router-link to="/">Powrot na strone glowna </router-link>
     </form>
 </main>
 </template>
