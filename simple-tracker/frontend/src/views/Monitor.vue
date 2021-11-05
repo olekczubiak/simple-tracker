@@ -9,11 +9,11 @@
 
 
     <!-- Default switch -->
-
-        <div class="form-check form-switch">
+        <button @click="refresh"> refresh</button>
+        <!-- <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
             <label class="form-check-label" for="flexSwitchCheckDefault">Automatyczne odswiezanie rekordow</label>
-        </div>
+        </div> -->
 
         </div>
 
@@ -35,5 +35,10 @@ export default {
         SlideBar,
         GetLivePoz,
     },
+    methods: {
+        refresh() {
+            window.location.reload();
+        }
+    }
 }
 </script>
