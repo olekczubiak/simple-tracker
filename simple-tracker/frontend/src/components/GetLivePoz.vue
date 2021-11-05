@@ -1,4 +1,14 @@
 <template>
+
+<!-- Default switch -->
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
+    <label class="form-check-label" for="flexSwitchCheckDefault"
+        >Automatyczne odswiezanie rekordow</label
+    >
+</div>
+
+
 <div class="row mb-2">  
 <!-- Tutaj jak coś musi być pętla for obejmująca urzadzenia -->
 <div class="col-md-6">
