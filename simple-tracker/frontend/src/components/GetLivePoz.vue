@@ -24,14 +24,21 @@
         Data i czas ostatniej aktualizacji: {{liveDate}} {{liveTime}}
         </div>
         <p class="card-text mb-auto">
-        Pozycja urzadzenia to: {{liveLat}}, {{liveLong}}
+        Pozycja urzadzenia to:  {{liveLong}}, {{liveLat}}
         </p>
-        <a href="/">
-        Zobacz na mapie
-        </a>
     </div>
+    <iframe
+    width="600"
+    height="450"
+    style="border:0"
+    loading="lazy"
+    allowfullscreen
+    :src="srcToGoogleMap"
+    >
+    </iframe>
     </div>
 </div>
+
 </div>
 </template>
 
@@ -40,6 +47,7 @@ export default {
     name: "GetLivePoz",
     data() {
         return {
+            srcToGoogleMap: "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=łódź",
             deviceName: "Nazwa urządzenia",
             deviceGpsName: "Nazwa GPS",
             liveDate: "Data",
@@ -63,6 +71,7 @@ export default {
     this.liveTime = data.time;
     this.liveLat = data.latitude;
     this.liveLong = data.longitude;
+    this.srcToGoogleMap = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + data.longitude + "," + data.latitude;
 
     const getDevice = await fetch('https://tracker.toadres.pl/api/device', {
             method: 'GET',
@@ -75,8 +84,11 @@ export default {
         const element = deviceData[index];
         this.deviceName = element.device_name;
         this.deviceGpsName = element.gps_name;
+        }
+    },
+    async giveUrl() {
+        return "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=łódź";
     }
-}
 
 }
 </script>
