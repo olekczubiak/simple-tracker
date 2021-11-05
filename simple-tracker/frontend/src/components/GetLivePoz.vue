@@ -1,14 +1,5 @@
 <template>
 
-<!-- Default switch -->
-<div class="form-check form-switch">
-    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-    <label class="form-check-label" for="flexSwitchCheckDefault"
-        >Automatyczne odswiezanie rekordow</label
-    >
-</div>
-
-
 <div class="row mb-2">  
 <!-- Tutaj jak coś musi być pętla for obejmująca urzadzenia -->
 <div class="col-md-6">
@@ -53,7 +44,7 @@ export default {
             liveDate: "Data",
             liveTime: "Godzina",
             liveLat: "Lat",
-            liveLong: "Log"
+            liveLong: "Log",
         }
     },
     async created() {
@@ -86,9 +77,6 @@ export default {
         this.deviceGpsName = element.gps_name;
         }
     },
-    async giveUrl() {
-        return "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=łódź";
-    }
 
 }
 </script>
