@@ -7,13 +7,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Monitorowanie:</h1>
 
-
-    <!-- Default switch -->
-        <button @click="refresh"> refresh</button>
-        <!-- <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-            <label class="form-check-label" for="flexSwitchCheckDefault">Automatyczne odswiezanie rekordow</label>
-        </div> -->
+        <button @click="stopRefresh">Stop refresh</button>
 
         </div>
 
@@ -27,7 +21,6 @@ import Nav from "@/components/Nav.vue"
 import SlideBar from "@/components/SlideBar.vue"
 import GetLivePoz from "@/components/GetLivePoz.vue"
 
-
 export default {
     name: 'Panel',
     components: {
@@ -35,10 +28,20 @@ export default {
         SlideBar,
         GetLivePoz,
     },
+    data() {
+        return {
+            myCounter: 0,
+            checked: false
+        }
+    },
     methods: {
-        refresh() {
-            window.location.reload();
+        stopRefresh() {
+            window.clearTimeout(MyTimeout)
         }
     }
 }
+var MyTimeout = window.setTimeout(function() {
+                    window.location.reload();
+                }, 5000)
+
 </script>
