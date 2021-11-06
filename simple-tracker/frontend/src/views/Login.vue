@@ -27,7 +27,7 @@ export default {
         });
         const router = useRouter();
         const submit = async () => {
-        await fetch('http://localhost:8000/token', {
+        await fetch('https://tracker.toadres.pl/token', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             credentials: 'include',

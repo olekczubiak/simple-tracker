@@ -3,6 +3,8 @@ import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import Panel from '@/views/Panel.vue'
+import Analysis from '@/views/Analysis.vue'
+import Monitor from '@/views/Monitor.vue'
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -10,6 +12,8 @@ const routes: Array<RouteRecordRaw> = [
   {path: '/login', component: Login},
   {path: '/register', component: Register},
   {path: '/panel', component: Panel},
+  {path: '/panel/monitor', component: Monitor},
+  {path: '/panel/analysis', component: Analysis},
   
 ]
 

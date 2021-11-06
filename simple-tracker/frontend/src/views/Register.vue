@@ -11,6 +11,7 @@
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
 
+        <router-link to="/">Powrot na strone glowna </router-link>
     </form>
 </main>
 </template>
@@ -32,7 +33,7 @@ export default {
       const router = useRouter();
 
       const submit = async () => {
-        await fetch('http://localhost:8000/user/create', {
+        await fetch('https://tracker.toadres.pl/user/create', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify(data)
