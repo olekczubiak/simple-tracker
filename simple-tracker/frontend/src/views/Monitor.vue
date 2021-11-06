@@ -28,12 +28,6 @@ export default {
         SlideBar,
         GetLivePoz,
     },
-    data() {
-        return {
-            myCounter: 0,
-            checked: false
-        }
-    },
     methods: {
         stopRefresh() {
             window.clearTimeout(MyTimeout)
