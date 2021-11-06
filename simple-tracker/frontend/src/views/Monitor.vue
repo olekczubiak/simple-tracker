@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Monitorowanie:</h1>
 
-        <button @click="stopRefresh" type="button" class="btn btn-outline-dark">Stop refresh!</button>
+        <button @click="Refresh" type="button" class="btn btn-outline-dark">Refresh!</button>
 
         </div>
 
@@ -29,13 +29,15 @@ export default {
         GetLivePoz,
     },
     methods: {
-        stopRefresh() {
-            window.clearTimeout(MyTimeout)
-        }
+        Refresh() {
+            window.location.reload();
+        },
+        // startRefresh() {
+        //     const MyTimeout = window.setTimeout(function() {
+        //             window.location.reload();
+        //         }, 5000)
+        // }
     }
 }
-var MyTimeout = window.setTimeout(function() {
-                    window.location.reload();
-                }, 5000)
 
 </script>
