@@ -47,11 +47,15 @@
                     <div class="mb-1 text-muted">
                         <div id="time-content"></div>
                         <div id="poz-content"></div>
+                        <div id="map-content"></div>
                         {{toPlayer}}
                     </div>
                     <p class="card-text mb-auto">
                         <button @click="getPlayer" class="btn btn-secondary btn-sm" id="start-button">Start!</button>
                         <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop!</button>
+                        <select v-model="selectedSpeed" style="width:10%;"> -->
+                            <option v-for="element in playerSpeed" v-bind:key="element" :selected="playerSpeed === element">{{ element }}</option>
+                        </select>
                         
                     </p>
                     
@@ -73,7 +77,8 @@ export default {
     name: "AnalizeTime",
     data() {
         return {
-            myData: "2021-10-30",
+            // Po testach datę trzeba usunać!!!!
+            myData: "2021-10-30", 
             firstDayRecord: "",
             lastDayRecord: "",
             numOfPowerOn: 1,
@@ -81,6 +86,8 @@ export default {
             listWithTime: [],
             listWithPoz: [],
             toPlayer: "Podaj datę by uzyskac info o godzinie i czasie",
+            playerSpeed: [1, 2, 5, 10, 20, 40],
+            selectedSpeed: 1,
 
         }
     },
@@ -138,18 +145,20 @@ export default {
                                         // console.log(data)
                                         document.getElementById("time-content").innerHTML = data;
                                     }
-                                , i * 300);
-                                console.log(this.timer1)
+                                , i * 1200 * (1/this.selectedSpeed) );
+                                console.log(this.selectedSpeed);
                 });
                 this.listWithPoz.forEach((element,i) => {
                                 this.timer2 = setTimeout(
                                     function(){
                                         const data = "Pozycja " + element;
                                         // console.log(data)
+                                        const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
+                                        const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
                                         document.getElementById("poz-content").innerHTML = data;
+                                        document.getElementById("map-content").innerHTML = mapIframe;
                                     }
-                                , i * 300);
-                                console.log(this.timer2)
+                                , i * 1200 * (1/this.selectedSpeed));
                 });
             }
             
@@ -159,8 +168,8 @@ export default {
             for (let index = 0; index < this.timer2; index++) {
                 clearTimeout(index);
             }
-            document.getElementById("time-content").innerHTML = "";
-            document.getElementById("poz-content").innerHTML = "";
+            // document.getElementById("time-content").innerHTML = "";
+            // document.getElementById("poz-content").innerHTML = "";
         }
     }
 }
