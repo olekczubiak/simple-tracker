@@ -3,6 +3,8 @@
         <div class="search-by-date">
         <input v-model="myData" type="data" class="form-control" placeholder="RRRR-MM-DD" required>
         <button class="w-100 btn btn-lg btn-primary" @click="getListOfPoz">Szukaj!</button>
+        <input type="checkbox" id="checkbox" v-model="checked">
+        <label for="checkbox" id="label-for-checkbox-to-show-map"> Zaznacz jezeli chcesz pokazać mapę</label>
         </div>
 
         <!-- <div class="search-for-resp">
@@ -28,7 +30,10 @@
                     <div class="mb-1 text-muted">
                         <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
                         <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
+                        {{myWaypoints}}
+                        <div v-if="checked==true" id="all-map-content"></div>
                     </div>
+
                 </div>
             </div>
             
@@ -66,9 +71,6 @@
 
     </div>
 
-
-
-
 </template>
 
 <script>
@@ -88,6 +90,9 @@ export default {
             toPlayer: "Podaj datę by uzyskac info o godzinie i czasie",
             playerSpeed: [1, 2, 5, 10, 20, 40],
             selectedSpeed: 1,
+            routeSrc: "",
+            checked: false,
+            myWaypoints: [],
 
         }
     },
@@ -106,18 +111,19 @@ export default {
                 )
                 .then(response => response.json())
                 .then(data => {
-                    // console.log(data)
                     // dodanie czasów i poz do list
                     for (let index = 0; index < data.length; index++) {
                         const element = data[index];
                         this.listWithTime.push(element.time);
                         this.listWithPoz.push(element.latitude + "," + element.longitude);
+
+
+                        const myValueOfWaypoints = 60
+                        if (index % myValueOfWaypoints == 0){
+                            this.myWaypoints.push(element.latitude + "," + element.longitude);
+                        }
                     }
 
-
-
-
-                    // Obliczenia zwiazane z czasem
                     const date1 = new Date( this.myData + " " + data[0].time);
                     const date2 = new Date(this.myData + " " + data.slice(-1)[0].time);
 
@@ -129,6 +135,19 @@ export default {
 
                     this.firstDayRecord = "Godzina: " + data[0].time + " latitude: " + data[0].latitude + " longitude: " + data[0].longitude;
                     this.lastDayRecord = "Godzina: " + data.slice(-1)[0].time + " latitude: " + data.slice(-1)[0].latitude + " longitude: " + data.slice(-1)[0].longitude;
+                
+
+                    console.log(this.myWaypoints.length)
+
+                    var waypointsToShowOnMap = "";
+                    this.myWaypoints.forEach(element => {
+                                            data = element + "|"
+                                            waypointsToShowOnMap += data 
+                                        });
+                    // console.log(waypointsToShowOnMap.substring(0, waypointsToShowOnMap.length - 1))
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + data[0].latitude + "," + data[0].longitude + "&destination=" + data.slice(-1)[0].latitude + "," + data.slice(-1)[0].longitude + "&waypoints=" + waypointsToShowOnMap.substring(0, waypointsToShowOnMap.length - 1) + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                    const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                    document.getElementById("all-map-content").innerHTML = mapIframe;
                     });
         },
         getPlayer() {
@@ -191,5 +210,10 @@ export default {
 #stop-button {
     margin-left: 5px;
     margin-right: 5px;
+}
+#label-for-checkbox-to-show-map {
+    margin-top: 5px;
+    margin-left: 4px;
+    margin-bottom: 5px;
 }
 </style>
