@@ -1,10 +1,10 @@
 <template>
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <p>Analiza pracy w danym dniu:</p>
         <div class="search-by-date">
         <input v-model="myData" type="data" class="form-control" placeholder="RRRR-MM-DD" required>
         <button class="w-100 btn btn-lg btn-primary" @click="getListOfPoz">Szukaj!</button>
         </div>
+
         <!-- <div class="search-for-resp">
             <p> Ile razu odpalono dzisiaj urządzenie <b>{{numOfPowerOn}}</b></p>
             <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
@@ -15,7 +15,26 @@
         </div> -->
     
     <div class="row mb-2">  
-    <!-- Tutaj jak coś musi być pętla for obejmująca urzadzenia -->
+        <!-- Tutaj podstawowej info -->
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary">
+                    Ile razu włączono urządzenie: <b>{{numOfPowerOn}}</b>
+                    </strong>
+                    <h3 class="mb-0">
+                        Czas pracy w dniu:  <b>{{workingTime}}</b>
+                    </h3>
+                    <div class="mb-1 text-muted">
+                        <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
+                        <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Tutaj player -->
         <div class="col-md-6">
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
@@ -26,11 +45,14 @@
                         Player
                     </h3>
                     <div class="mb-1 text-muted">
+                        <div id="time-content"></div>
+                        <div id="poz-content"></div>
                         {{toPlayer}}
                     </div>
                     <p class="card-text mb-auto">
-                        <button @click="getPlayer" class="btn btn-secondary btn-sm">Start</button>
-                        <!-- <button type="button" class="btn btn-secondary btn-sm">Small button</button> -->
+                        <button @click="getPlayer" class="btn btn-secondary btn-sm" id="start-button">Start!</button>
+                        <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop!</button>
+                        
                     </p>
                     
                 </div>
@@ -43,7 +65,6 @@
 
 
 
-        </main>
 </template>
 
 <script>
@@ -55,11 +76,12 @@ export default {
             myData: "2021-10-30",
             firstDayRecord: "",
             lastDayRecord: "",
-            numOfPowerOn: 0,
+            numOfPowerOn: 1,
             workingTime: "",
             listWithTime: [],
             listWithPoz: [],
             toPlayer: "Podaj datę by uzyskac info o godzinie i czasie",
+
         }
     },
 
@@ -104,24 +126,44 @@ export default {
         },
         getPlayer() {
             if (this.listWithTime.length == 0){
-                alert("Załaduj listę zeby zaczac")
+                alert("Wybierz dzien, aby zacząć!!!")
             } else {
-                for (let index = 0; index < this.listWithTime.length; index++) {
-                    const time = this.listWithTime[index];
-                    const poz = this.listWithPoz[index];
-                    const data = "Godzina " + time + " Pozycja " + poz ;
-                    this.toPlayer = data
-                }
                 
-                console.log(this.listWithTime.length)
-                console.log("załadowane")
+                this.toPlayer = "";
 
+                this.listWithTime.forEach((element,i) => {
+                                this.timer1 = setTimeout(
+                                    function(){
+                                        const data = "Godzina " + element;
+                                        // console.log(data)
+                                        document.getElementById("time-content").innerHTML = data;
+                                    }
+                                , i * 300);
+                                console.log(this.timer1)
+                });
+                this.listWithPoz.forEach((element,i) => {
+                                this.timer2 = setTimeout(
+                                    function(){
+                                        const data = "Pozycja " + element;
+                                        // console.log(data)
+                                        document.getElementById("poz-content").innerHTML = data;
+                                    }
+                                , i * 300);
+                                console.log(this.timer2)
+                });
             }
             
+        },
+        stopPlayer() {
+            this.toPlayer = "Przerwałeś odtwarzać, kliknij START!!";
+            for (let index = 0; index < this.timer2; index++) {
+                clearTimeout(index);
+            }
+            document.getElementById("time-content").innerHTML = "";
+            document.getElementById("poz-content").innerHTML = "";
         }
     }
 }
-
 
 </script>
 
@@ -134,5 +176,11 @@ export default {
 .search-by-date input[type="data"] {
     margin-bottom: 10px;
 }
-
+#start-button {
+    margin-right: 5px;
+}
+#stop-button {
+    margin-left: 5px;
+    margin-right: 5px;
+}
 </style>
