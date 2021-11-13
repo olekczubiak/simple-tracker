@@ -54,15 +54,16 @@
                         <div id="map-content"></div>
                         {{toPlayer}}
                     </div>
-                    <p class="card-text mb-auto">
+                    <div class="card-text mb-auto">
                         <button @click="getPlayer" class="btn btn-secondary btn-sm" id="start-button">Start</button>
                         <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop</button>
                         <button @click="resetPlayer" class="btn btn-secondary btn-sm" id="reset-button">Reset</button>
-                        <select v-model="selectedSpeed" style="width:10%;">
+                        <input v-model="playerTime" type="data" class="form-control" placeholder="Player time" id="input-player-timer">
+                        <select v-model="selectedSpeed" style="width:6%;" id="speed-selector">
                             <option v-for="element in playerSpeed" v-bind:key="element" :selected="playerSpeed === element">{{ element }}</option>
                         </select>
-                        
-                    </p>
+                        <p id="info-about-speeed"> Wybierz predkość</p>
+                    </div>
                     
                 </div>
             </div>
@@ -92,7 +93,8 @@ export default {
             selectedSpeed: 1,
             routeSrc: "",
             checked: false,
-
+            playerTime: "",
+            indexToStart: "",
         }
     },
 
@@ -140,29 +142,56 @@ export default {
             if (this.listWithTime.length == 0){
                 alert("Wybierz dzien, aby zacząć!!!")
             } else {
+                if (this.playerTime == "") {
+                    this.toPlayer = "";
+                    this.listWithTime.forEach((element,i) => {
+                                    this.timer1 = setTimeout(
+                                        function(){
+                                            const data = element;
+                                            // console.log(data)
+                                            document.getElementById("time-content").innerHTML = data;
+                                        }
+                                    , i * 1200 * (1/this.selectedSpeed) );
+                    });
+                    this.listWithPoz.forEach((element,i) => {
+                                    this.timer2 = setTimeout(
+                                        function(){
+                                            const data = "Pozycja " + element;
+                                            // console.log(data)
+                                            const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
+                                            const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                                            document.getElementById("poz-content").innerHTML = data;
+                                            document.getElementById("map-content").innerHTML = mapIframe;
+                                        }
+                                    , i * 1200 * (1/this.selectedSpeed));
+                    });
+                } else {
+                    for (let index = 0; index < this.timer2; index++) {
+                        clearTimeout(index);
+                    }
+                    console.log("odpal od specyficznego momentu " + this.indexToStart)
+                    this.listWithTime.slice(this.indexToStart, this.listWithTime.length).forEach((element,i) => {
+                                    this.timer1 = setTimeout(
+                                        function(){
+                                            const data = element;
+                                            document.getElementById("time-content").innerHTML = data;
+                                        }
+                                    , i * 1200 * (1/this.selectedSpeed) );
+                    });
+                    this.listWithPoz.forEach((element,i) => {
+                                    this.timer2 = setTimeout(
+                                        function(){
+                                            const data = "Pozycja " + element;
+                                            // console.log(data)
+                                            const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
+                                            const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                                            document.getElementById("poz-content").innerHTML = data;
+                                            document.getElementById("map-content").innerHTML = mapIframe;
+                                        }
+                                    , i * 1200 * (1/this.selectedSpeed));
+                    });
+                }
                 
-                this.toPlayer = "";
-                this.listWithTime.forEach((element,i) => {
-                                this.timer1 = setTimeout(
-                                    function(){
-                                        const data = "Godzina " + element;
-                                        // console.log(data)
-                                        document.getElementById("time-content").innerHTML = data;
-                                    }
-                                , i * 1200 * (1/this.selectedSpeed) );
-                });
-                this.listWithPoz.forEach((element,i) => {
-                                this.timer2 = setTimeout(
-                                    function(){
-                                        const data = "Pozycja " + element;
-                                        // console.log(data)
-                                        const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
-                                        const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
-                                        document.getElementById("poz-content").innerHTML = data;
-                                        document.getElementById("map-content").innerHTML = mapIframe;
-                                    }
-                                , i * 1200 * (1/this.selectedSpeed));
-                });
             }
             
         },
@@ -171,11 +200,20 @@ export default {
             for (let index = 0; index < this.timer2; index++) {
                 clearTimeout(index);
             }
+            this.playerTime = "";
             // document.getElementById("time-content").innerHTML = "";
             // document.getElementById("poz-content").innerHTML = "";
         },
         stopPlayer() {
             this.toPlayer = "Zastopowałeś odtwarzanie, kliknij START!!";
+            console.log('kliknieto stop');
+            for (let index = 0; index < this.timer2; index++) {
+                clearTimeout(index);
+            }
+
+            const myTimer =  document.getElementById("time-content").innerHTML;
+            this.indexToStart = this.listWithTime.indexOf(myTimer);
+            this.playerTime = myTimer
         }
     }
 }
@@ -206,5 +244,15 @@ export default {
     margin-top: 5px;
     margin-left: 4px;
     margin-bottom: 5px;
+}
+#input-player-timer{
+    width: 175px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#info-about-speeed {
+    float: right;
+    margin-right: 550px;
+    font-size: 15px;
 }
 </style>
