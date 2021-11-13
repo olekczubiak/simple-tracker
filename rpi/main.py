@@ -13,6 +13,8 @@ ACCESS_TOKEN = '48cdcb6f7300a42157e9a78db71b7cc103609b7584dcffc12ca20605110b8e67
 def print_data(date, lat, lng, speed):
 	print("Date=\x1b[2;34;40m" + date + "\x1b[0m and Latitude=\x1b[3;31;40m" + str(lat) + "\x1b[0m and Longitude=\x1b[3;31;40m" + str(lng) + "\x1b[0m Speed=\x1b[1;33;40m" + str(speed) + "\x1b[0m")
 
+
+requester.send_data(URL, ACCESS_TOKEN, TODAY_DATE[:10], "XX:XX:XX", 0 , 0)
 while True:
 	port="/dev/ttyAMA0"
 	ser=serial.Serial(port, baudrate=9600, timeout=0.5)
