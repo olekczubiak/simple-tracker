@@ -3,22 +3,22 @@
 <div class="position-sticky pt-3">
     <ul class="nav flex-column">
     <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">
+        <router-link to="/panel" class="nav-link">
+        <span data-feather="shopping-cart"></span>
+        Panel main page
+        </router-link>
+    </li>
+    <li class="nav-item">
+        <router-link to="/panel/monitor" class="nav-link" aria-current="page">
         <span data-feather="home"></span>
         Monitorowanie
-        </a>
+        </router-link>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <router-link to="/panel/analysis" class="nav-link">
         <span data-feather="file"></span>
-        Analiza #1
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-        <span data-feather="shopping-cart"></span>
-        Analiza #2
-        </a>
+        Analiza
+        </router-link>
     </li>
     </ul>
 
