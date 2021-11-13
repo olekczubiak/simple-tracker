@@ -30,7 +30,6 @@
                     <div class="mb-1 text-muted">
                         <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
                         <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
-                        {{myWaypoints}}
                         <div v-if="checked==true" id="all-map-content"></div>
                     </div>
 
@@ -56,9 +55,10 @@
                         {{toPlayer}}
                     </div>
                     <p class="card-text mb-auto">
-                        <button @click="getPlayer" class="btn btn-secondary btn-sm" id="start-button">Start!</button>
-                        <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop!</button>
-                        <select v-model="selectedSpeed" style="width:10%;"> -->
+                        <button @click="getPlayer" class="btn btn-secondary btn-sm" id="start-button">Start</button>
+                        <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop</button>
+                        <button @click="resetPlayer" class="btn btn-secondary btn-sm" id="reset-button">Reset</button>
+                        <select v-model="selectedSpeed" style="width:10%;">
                             <option v-for="element in playerSpeed" v-bind:key="element" :selected="playerSpeed === element">{{ element }}</option>
                         </select>
                         
@@ -92,13 +92,14 @@ export default {
             selectedSpeed: 1,
             routeSrc: "",
             checked: false,
-            myWaypoints: [],
 
         }
     },
 
     methods: {
         getListOfPoz() {
+            this.listWithTime = [];
+            this.listWithPoz = [];
             const myToken = localStorage.getItem('user-token');
             const myLink = "https://tracker.toadres.pl/api/list/day?day=" + this.myData;
 
@@ -116,12 +117,6 @@ export default {
                         const element = data[index];
                         this.listWithTime.push(element.time);
                         this.listWithPoz.push(element.latitude + "," + element.longitude);
-
-
-                        const myValueOfWaypoints = 60
-                        if (index % myValueOfWaypoints == 0){
-                            this.myWaypoints.push(element.latitude + "," + element.longitude);
-                        }
                     }
 
                     const date1 = new Date( this.myData + " " + data[0].time);
@@ -135,17 +130,8 @@ export default {
 
                     this.firstDayRecord = "Godzina: " + data[0].time + " latitude: " + data[0].latitude + " longitude: " + data[0].longitude;
                     this.lastDayRecord = "Godzina: " + data.slice(-1)[0].time + " latitude: " + data.slice(-1)[0].latitude + " longitude: " + data.slice(-1)[0].longitude;
-                
 
-                    console.log(this.myWaypoints.length)
-
-                    var waypointsToShowOnMap = "";
-                    this.myWaypoints.forEach(element => {
-                                            data = element + "|"
-                                            waypointsToShowOnMap += data 
-                                        });
-                    // console.log(waypointsToShowOnMap.substring(0, waypointsToShowOnMap.length - 1))
-                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + data[0].latitude + "," + data[0].longitude + "&destination=" + data.slice(-1)[0].latitude + "," + data.slice(-1)[0].longitude + "&waypoints=" + waypointsToShowOnMap.substring(0, waypointsToShowOnMap.length - 1) + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + data[0].latitude + "," + data[0].longitude + "&destination=" + data.slice(-1)[0].latitude + "," + data.slice(-1)[0].longitude + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
                     const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
                     document.getElementById("all-map-content").innerHTML = mapIframe;
                     });
@@ -156,7 +142,6 @@ export default {
             } else {
                 
                 this.toPlayer = "";
-
                 this.listWithTime.forEach((element,i) => {
                                 this.timer1 = setTimeout(
                                     function(){
@@ -165,7 +150,6 @@ export default {
                                         document.getElementById("time-content").innerHTML = data;
                                     }
                                 , i * 1200 * (1/this.selectedSpeed) );
-                                console.log(this.selectedSpeed);
                 });
                 this.listWithPoz.forEach((element,i) => {
                                 this.timer2 = setTimeout(
@@ -182,13 +166,16 @@ export default {
             }
             
         },
-        stopPlayer() {
+        resetPlayer() {
             this.toPlayer = "Przerwałeś odtwarzać, kliknij START!!";
             for (let index = 0; index < this.timer2; index++) {
                 clearTimeout(index);
             }
             // document.getElementById("time-content").innerHTML = "";
             // document.getElementById("poz-content").innerHTML = "";
+        },
+        stopPlayer() {
+            this.toPlayer = "Zastopowałeś odtwarzanie, kliknij START!!";
         }
     }
 }
@@ -208,6 +195,10 @@ export default {
     margin-right: 5px;
 }
 #stop-button {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#reset-button {
     margin-left: 5px;
     margin-right: 5px;
 }
