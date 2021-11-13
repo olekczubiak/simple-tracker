@@ -15,7 +15,7 @@
         Data i czas ostatniej aktualizacji: {{liveDate}} {{liveTime}}
         </div>
         <p class="card-text mb-auto">
-        Pozycja urzadzenia to:  {{liveLong}}, {{liveLat}}
+        Pozycja urzadzenia to: {{liveLat}}, {{liveLong}},
         </p>
     </div>
     <iframe
@@ -62,7 +62,7 @@ export default {
     this.liveTime = data.time;
     this.liveLat = data.latitude;
     this.liveLong = data.longitude;
-    this.srcToGoogleMap = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + data.longitude + "," + data.latitude;
+    this.srcToGoogleMap = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + data.latitude + "," + data.longitude
 
     const getDevice = await fetch('https://tracker.toadres.pl/api/device', {
             method: 'GET',
