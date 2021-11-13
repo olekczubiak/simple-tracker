@@ -6,16 +6,6 @@
         <input type="checkbox" id="checkbox" v-model="checked">
         <label for="checkbox" id="label-for-checkbox-to-show-map"> Zaznacz jezeli chcesz pokazać mapę</label>
         </div>
-
-        <!-- <div class="search-for-resp">
-            <p> Ile razu odpalono dzisiaj urządzenie <b>{{numOfPowerOn}}</b></p>
-            <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
-            <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
-            <p> Czas pracy w dniu:  <b>{{workingTime}}</b></p>
-            <p> Lista z czasem: {{listWithTime}}</p>
-            <p> Lista z pozycjami {{listWithPoz}}</p>
-        </div> -->
-    
     <div class="row mb-2">  
         <!-- Tutaj podstawowej info -->
         <div class="col-md-6">
@@ -59,6 +49,8 @@
                         <button @click="stopPlayer" class="btn btn-secondary btn-sm" id="stop-button">Stop</button>
                         <button @click="resetPlayer" class="btn btn-secondary btn-sm" id="reset-button">Reset</button>
                         <input v-model="playerTime" type="data" class="form-control" placeholder="Player time" id="input-player-timer">
+                        <button @click="readTime" class="btn btn-secondary btn-sm" id="readtime-button">Załaduj godzine</button> 
+                        <br>
                         <select v-model="selectedSpeed" style="width:6%;" id="speed-selector">
                             <option v-for="element in playerSpeed" v-bind:key="element" :selected="playerSpeed === element">{{ element }}</option>
                         </select>
@@ -148,7 +140,6 @@ export default {
                                     this.timer1 = setTimeout(
                                         function(){
                                             const data = element;
-                                            // console.log(data)
                                             document.getElementById("time-content").innerHTML = data;
                                         }
                                     , i * 1200 * (1/this.selectedSpeed) );
@@ -157,7 +148,6 @@ export default {
                                     this.timer2 = setTimeout(
                                         function(){
                                             const data = "Pozycja " + element;
-                                            // console.log(data)
                                             const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
                                             const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
                                             document.getElementById("poz-content").innerHTML = data;
@@ -169,7 +159,6 @@ export default {
                     for (let index = 0; index < this.timer2; index++) {
                         clearTimeout(index);
                     }
-                    console.log("odpal od specyficznego momentu " + this.indexToStart)
                     this.listWithTime.slice(this.indexToStart, this.listWithTime.length).forEach((element,i) => {
                                     this.timer1 = setTimeout(
                                         function(){
@@ -178,11 +167,10 @@ export default {
                                         }
                                     , i * 1200 * (1/this.selectedSpeed) );
                     });
-                    this.listWithPoz.forEach((element,i) => {
+                    this.listWithPoz.slice(this.indexToStart, this.listWithTime.length).forEach((element,i) => {
                                     this.timer2 = setTimeout(
                                         function(){
                                             const data = "Pozycja " + element;
-                                            // console.log(data)
                                             const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=" + element;
                                             const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
                                             document.getElementById("poz-content").innerHTML = data;
@@ -214,6 +202,15 @@ export default {
             const myTimer =  document.getElementById("time-content").innerHTML;
             this.indexToStart = this.listWithTime.indexOf(myTimer);
             this.playerTime = myTimer
+        },
+        readTime() {
+            this.indexToStart = this.listWithTime.indexOf(this.playerTime);
+            if (this.indexToStart == -1){
+                alert("Nie ma podanej godziny!")
+            }
+            console.log("lista" + this.listWithTime)
+            
+
         }
     }
 }
@@ -251,8 +248,13 @@ export default {
     margin-bottom: 5px;
 }
 #info-about-speeed {
-    float: right;
-    margin-right: 550px;
+    margin-top: 5px;
+    /* float: right; */
+    margin-left: auto; 
+    margin-right: 0;
     font-size: 15px;
+}
+#speed-selector {
+    margin-top: 5px;
 }
 </style>
