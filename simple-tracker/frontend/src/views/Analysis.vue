@@ -6,6 +6,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Analiza:</h1>
         </div>
+    <AnalizeTime/>
     </main>
 </div>
 </template>
@@ -13,12 +14,14 @@
 <script>
 import Nav from "@/components/Nav.vue"
 import SlideBar from "@/components/SlideBar.vue"
+import AnalizeTime from "@/components/AnalizeTime.vue"
 
 export default {
     name: "Analysis",
     components: {
         Nav,
-        SlideBar
+        SlideBar,
+        AnalizeTime
     },
 }
 </script>
