@@ -73,13 +73,15 @@ export default {
     data() {
         return {
             // Po testach datę trzeba usunać!!!!
-            myData: "2021-10-30", 
+            myData: "2021-11-13", 
             firstDayRecord: "",
             lastDayRecord: "",
-            numOfPowerOn: 1,
+            numOfPowerOn: 0,
             workingTime: "",
             listWithTime: [],
             listWithPoz: [],
+            listWithLng: [],
+            listWithLat: [],
             toPlayer: "Podaj datę by uzyskac info o godzinie i czasie",
             playerSpeed: [1, 2, 5, 10, 20, 40],
             selectedSpeed: 1,
@@ -92,6 +94,7 @@ export default {
 
     methods: {
         getListOfPoz() {
+            this.numOfPowerOn = 0;
             this.listWithTime = [];
             this.listWithPoz = [];
             const myToken = localStorage.getItem('user-token');
@@ -109,12 +112,24 @@ export default {
                     // dodanie czasów i poz do list
                     for (let index = 0; index < data.length; index++) {
                         const element = data[index];
-                        this.listWithTime.push(element.time);
-                        this.listWithPoz.push(element.latitude + "," + element.longitude);
-                    }
+                        if (element.time == "XX:XX:XX") {
+                            this.numOfPowerOn++;
+                            console.log("Ilość wydarzeń" + this.numOfPowerOn)
+                            if (this.numOfPowerOn >= 2){
+                                alert("Przekroczono ilość uruchomień")
+                            }
+                        } else {
+                            this.listWithTime.push(element.time);
+                            this.listWithPoz.push(element.latitude + "," + element.longitude);
+                            this.listWithLat.push(element.latitude);
+                            this.listWithLng.push(element.longitude)
 
-                    const date1 = new Date( this.myData + " " + data[0].time);
-                    const date2 = new Date(this.myData + " " + data.slice(-1)[0].time);
+                        }
+                    }
+                    console.log(this.listWithTime)
+
+                    const date1 = new Date( this.myData + " " + this.listWithTime[0]);
+                    const date2 = new Date(this.myData + " " + this.listWithTime.slice(-1)[0]);
 
                     const timeDiff = (date2 - date1);
                     const min = Math.floor((timeDiff/1000/60) << 0);
@@ -122,10 +137,10 @@ export default {
                     // console.log(min + " min " + sec + " sec")
                     this.workingTime = min + " min " + sec + " sec"
 
-                    this.firstDayRecord = "Godzina: " + data[0].time + " latitude: " + data[0].latitude + " longitude: " + data[0].longitude;
-                    this.lastDayRecord = "Godzina: " + data.slice(-1)[0].time + " latitude: " + data.slice(-1)[0].latitude + " longitude: " + data.slice(-1)[0].longitude;
+                    this.firstDayRecord = "Godzina: " + this.listWithTime[0] + " latitude: " + this.listWithLat[0] + " longitude: " + this.listWithLng[0];
+                    this.lastDayRecord = "Godzina: " + this.listWithTime.slice(-1)[0] + " latitude: " + this.listWithLat.slice(-1)[0] + " longitude: " + this.listWithLng.slice(-1)[0];
 
-                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + data[0].latitude + "," + data[0].longitude + "&destination=" + data.slice(-1)[0].latitude + "," + data.slice(-1)[0].longitude + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[0]+ "," + this.listWithLng[0] + "&destination=" + this.listWithLat.slice(-1)[0] + "," + this.listWithLng.slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
                     const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
                     document.getElementById("all-map-content").innerHTML = mapIframe;
                     });
