@@ -29,8 +29,8 @@
                     <div class="mb-1 text-muted">
                         <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
                         <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
-                        <div v-if="checked==true" id="all-map-content"></div>
                     </div>
+                    
 
                 </div>
             </div>
@@ -96,7 +96,7 @@ export default {
             playerTime: "",
             indexToStart: "",
             selectedTime: "",
-            AffterClickOnButtonTime: 99,
+            AfterClickOnButtonTime: 99,
             isButtonToChooseTimeChecked: false,
 
         }
@@ -130,8 +130,11 @@ export default {
                         this.listWithLng.push(element.longitude)
                     }
 
-                    // Zamienienie listy z [x, 1, 2, 3, x, 1, 2] na [[1,2,3], [1,2]]
+                    // Zamienienie listy czasowej z [x, 1, 2, 3, x, 1, 2] na [[1,2,3], [1,2]]
                     const listOfArrays = [];
+                    const listOfArraysLat = [];
+                    const listOfArraysLng = [];
+                    const listOfArraysPoz = [];
                     var myArray = this.listWithTime.join("!").split("XX:XX:XX");
                     myArray.shift();
                     for (let index = 0; index < myArray.length; index++) {
@@ -140,9 +143,19 @@ export default {
                         signsInArray.pop();
                         signsInArray.shift();
                         listOfArrays.push(signsInArray);
+                        const myFirstIndex = this.listWithTime.indexOf(signsInArray[0])
+                        const myLastIndex = this.listWithTime.indexOf(signsInArray.slice(-1)[0]) + 1
+
+
+                        const myNewListOfLat = this.listWithLat.slice(myFirstIndex, myLastIndex)
+                        const myNewListOfLng = this.listWithLng.slice(myFirstIndex, myLastIndex)
+                        const myNewListOfPoz = this.listWithPoz.slice(myFirstIndex, myLastIndex)
+
+                        listOfArraysLat.push(myNewListOfLat)
+                        listOfArraysLng.push(myNewListOfLng)
+                        listOfArraysPoz.push(myNewListOfPoz)
                     }
                     this.numOfPowerOn = listOfArrays.length;
-                    console.log(listOfArrays);
 
                     // Wybranie odpowieniego czasu
                     var availableTimes = "";
@@ -153,42 +166,23 @@ export default {
                     }
                     document.getElementById("availableTimesId").innerHTML = availableTimes
 
+                    // Nadpisanie lokalnej listy do globalnej
+                    this.listWithTime = listOfArrays;
+                    this.listWithPoz = listOfArraysPoz;
+                    this.listWithLat = listOfArraysLat;
+                    this.listWithLng = listOfArraysLng;
 
-                    console.log(this.listWithTime);
-                    console.log(this.listWithPoz);
-                    console.log(this.listWithLng);
-                    console.log(this.listWithLat);
-                    
-
-
-
-
-
-
-
-
+                    // To debug
+                    // console.log(this.listWithTime[this.AfterClickOnButtonTime]);
+                    // console.log(this.listWithTime);
+                    // console.log(this.listWithPoz);
+                    // console.log(this.listWithLng);
+                    // console.log(this.listWithLat);
 
 
 
 
 
-
-
-                    const date1 = new Date( this.myData + " " + this.listWithTime[0]);
-                    const date2 = new Date(this.myData + " " + this.listWithTime.slice(-1)[0]);
-
-                    const timeDiff = (date2 - date1);
-                    const min = Math.floor((timeDiff/1000/60) << 0);
-                    const sec = Math.floor((timeDiff/1000) % 60);
-                    // console.log(min + " min " + sec + " sec")
-                    this.workingTime = min + " min " + sec + " sec"
-
-                    this.firstDayRecord = "Godzina: " + this.listWithTime[0] + " latitude: " + this.listWithLat[0] + " longitude: " + this.listWithLng[0];
-                    this.lastDayRecord = "Godzina: " + this.listWithTime.slice(-1)[0] + " latitude: " + this.listWithLat.slice(-1)[0] + " longitude: " + this.listWithLng.slice(-1)[0];
-
-                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[0]+ "," + this.listWithLng[0] + "&destination=" + this.listWithLat.slice(-1)[0] + "," + this.listWithLng.slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
-                    const mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
-                    document.getElementById("all-map-content").innerHTML = mapIframe;
                     });
         },
         getPlayer() {
@@ -197,7 +191,7 @@ export default {
             } else {
                 if (this.playerTime == "") {
                     this.toPlayer = "";
-                    this.listWithTime.forEach((element,i) => {
+                    this.listWithTime[this.AfterClickOnButtonTime].forEach((element,i) => {
                                     this.timer1 = setTimeout(
                                         function(){
                                             const data = element;
@@ -205,7 +199,7 @@ export default {
                                         }
                                     , i * 1200 * (1/this.selectedSpeed) );
                     });
-                    this.listWithPoz.forEach((element,i) => {
+                    this.listWithPoz[this.AfterClickOnButtonTime].forEach((element,i) => {
                                     this.timer2 = setTimeout(
                                         function(){
                                             const data = "Pozycja " + element;
@@ -220,7 +214,7 @@ export default {
                     for (let index = 0; index < this.timer2; index++) {
                         clearTimeout(index);
                     }
-                    this.listWithTime.slice(this.indexToStart, this.listWithTime.length).forEach((element,i) => {
+                    this.listWithTime[this.AfterClickOnButtonTime].slice(this.indexToStart, this.listWithTime[this.AfterClickOnButtonTime].length).forEach((element,i) => {
                                     this.timer1 = setTimeout(
                                         function(){
                                             const data = element;
@@ -228,7 +222,7 @@ export default {
                                         }
                                     , i * 1200 * (1/this.selectedSpeed) );
                     });
-                    this.listWithPoz.slice(this.indexToStart, this.listWithTime.length).forEach((element,i) => {
+                    this.listWithPoz[this.AfterClickOnButtonTime].slice(this.indexToStart, this.listWithTime[this.AfterClickOnButtonTime].length).forEach((element,i) => {
                                     this.timer2 = setTimeout(
                                         function(){
                                             const data = "Pozycja " + element;
@@ -260,11 +254,11 @@ export default {
             }
 
             const myTimer =  document.getElementById("time-content").innerHTML;
-            this.indexToStart = this.listWithTime.indexOf(myTimer);
+            this.indexToStart = this.listWithTime[this.AfterClickOnButtonTime].indexOf(myTimer);
             this.playerTime = myTimer
         },
         readTime() {
-            this.indexToStart = this.listWithTime.indexOf(this.playerTime);
+            this.indexToStart = this.listWithTime[this.AfterClickOnButtonTime].indexOf(this.playerTime);
             if (this.indexToStart == -1){
                 alert("Nie ma podanej godziny!")
             }
@@ -273,8 +267,26 @@ export default {
             if (this.selectedTime == "" || this.selectedTime >= this.numOfPowerOn) {
                 alert("Wybierz poprawny czas")
             } else {
-                this.AffterClickOnButtonTime = this.selectedTime;
+                this.AfterClickOnButtonTime = this.selectedTime;
                 this.isButtonToChooseTimeChecked = true;
+
+                const date1 = new Date( this.myData + " " + this.listWithTime[this.AfterClickOnButtonTime][0]);
+                const date2 = new Date(this.myData + " " + this.listWithTime[this.AfterClickOnButtonTime].slice(-1)[0]);
+
+                const timeDiff = (date2 - date1);
+                const min = Math.floor((timeDiff/1000/60) << 0);
+                const sec = Math.floor((timeDiff/1000) % 60);
+
+                this.workingTime = min + " min " + sec + " sec"
+
+                this.firstDayRecord = "Godzina: " + this.listWithTime[this.AfterClickOnButtonTime][0] + " latitude: " + this.listWithLat[this.AfterClickOnButtonTime][0] + " longitude: " + this.listWithLng[this.AfterClickOnButtonTime][0];
+                this.lastDayRecord = "Godzina: " + this.listWithTime[this.AfterClickOnButtonTime].slice(-1)[0] + " latitude: " + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + " longitude: " + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0];
+
+                // let map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                // // const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=głowno"
+
+                // let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                // document.getElementById("route-map-content").innerHTML = mapIframe;
             }
         }
     }
