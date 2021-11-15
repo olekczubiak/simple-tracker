@@ -30,10 +30,10 @@
     </h6>
     <ul class="nav flex-column mb-2">
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <router-link to="/panel/calendar" class="nav-link">
         <span data-feather="file-text"></span>
-        Szukaj po dniu
-        </a>
+        Kalendarz
+        </router-link>
     </li>
     </ul>
 
