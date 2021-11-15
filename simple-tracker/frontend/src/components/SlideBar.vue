@@ -44,13 +44,13 @@
     </a>
     </h6>
     <ul class="nav flex-column mb-2">
-    <li class="nav-item">
+    <li v-if="isLogin==false" class="nav-item">
         <router-link class="nav-link" to="/login">
         <span data-feather="file-text"></span>
         Zaloguj!
         </router-link>
     </li>
-    <li class="nav-item">
+    <li v-if="isLogin==true" class="nav-item">
         <a v-on:click="logoutButton" class="nav-link">
         <span data-feather="file-text"></span>
         Wyloguj!
@@ -64,6 +64,19 @@
 <script>
 export default {
     name: 'slideBar',
+    data() {
+        return {
+            isLogin: Boolean,
+        }
+    },
+    created() {
+        const myToken = localStorage.getItem('user-token');
+        if (myToken == null) {
+            this.isLogin = false
+        } else {
+            this.isLogin = true
+        }
+    },
     methods: {
         logoutButton() {
             localStorage.removeItem('user-token');
