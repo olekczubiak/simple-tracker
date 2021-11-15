@@ -3,16 +3,25 @@
         <div class="search-by-date">
         <input v-model="myData" type="data" class="form-control" placeholder="RRRR-MM-DD" required>
         <button class="w-100 btn btn-lg btn-primary" @click="getListOfPoz">Szukaj!</button>
-        <input type="checkbox" id="checkbox" v-model="checked">
-        <label for="checkbox" id="label-for-checkbox-to-show-map"> Zaznacz jezeli chcesz pokazać mapę</label>
+        <div class="checkbox-for-show-map">
+            <input type="checkbox" id="checkbox" v-model="checked">
+            <label for="checkbox" id="label-for-checkbox-to-show-map"> Zaznacz jezeli chcesz pokazać mapę</label>
         </div>
-    <div class="row mb-2">  
+        <p>Ile razu włączono urządzenie: <b>{{numOfPowerOn}}</b></p>
+        <div v-if="isButtonToChooseTimeChecked==false" class="selecting-time-for-alalyze">
+            <h1>Dostępne czasy: </h1>
+            <div id="availableTimesId"></div>
+            <input v-model="selectedTime" type="data" class="form-control" placeholder="Wybierz czas">
+            <button class="w-100 btn btn-lg btn-primary" @click="SelectMyTime">Wybierz!</button>
+        </div>
+        </div>
+    <div v-if="numOfPowerOn!=0 && isButtonToChooseTimeChecked==true" class="row mb-2">  
         <!-- Tutaj podstawowej info -->
         <div class="col-md-6">
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
                     <strong class="d-inline-block mb-2 text-primary">
-                    Ile razu włączono urządzenie: <b>{{numOfPowerOn}}</b>
+                    Info
                     </strong>
                     <h3 class="mb-0">
                         Czas pracy w dniu:  <b>{{workingTime}}</b>
@@ -33,11 +42,8 @@
             <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                 <div class="col p-4 d-flex flex-column position-static">
                     <strong class="d-inline-block mb-2 text-primary">
-                    Rekord 1
-                    </strong>
-                    <h3 class="mb-0">
                         Player
-                    </h3>
+                    </strong>
                     <div class="mb-1 text-muted">
                         <div id="time-content"></div>
                         <div id="poz-content"></div>
@@ -76,8 +82,8 @@ export default {
             myData: "2021-11-13", 
             firstDayRecord: "",
             lastDayRecord: "",
-            numOfPowerOn: 0,
             workingTime: "",
+            numOfPowerOn: 0,
             listWithTime: [],
             listWithPoz: [],
             listWithLng: [],
@@ -89,6 +95,10 @@ export default {
             checked: false,
             playerTime: "",
             indexToStart: "",
+            selectedTime: "",
+            AffterClickOnButtonTime: 99,
+            isButtonToChooseTimeChecked: false,
+
         }
     },
 
@@ -97,6 +107,9 @@ export default {
             this.numOfPowerOn = 0;
             this.listWithTime = [];
             this.listWithPoz = [];
+            this.listWithLng = [];
+            this.listWithLat = [];
+            this.isButtonToChooseTimeChecked = false;
             const myToken = localStorage.getItem('user-token');
             const myLink = "https://tracker.toadres.pl/api/list/day?day=" + this.myData;
 
@@ -109,24 +122,57 @@ export default {
                 )
                 .then(response => response.json())
                 .then(data => {
-                    // dodanie czasów i poz do list
                     for (let index = 0; index < data.length; index++) {
                         const element = data[index];
-                        if (element.time == "XX:XX:XX") {
-                            this.numOfPowerOn++;
-                            console.log("Ilość wydarzeń" + this.numOfPowerOn)
-                            if (this.numOfPowerOn >= 2){
-                                alert("Przekroczono ilość uruchomień")
-                            }
-                        } else {
-                            this.listWithTime.push(element.time);
-                            this.listWithPoz.push(element.latitude + "," + element.longitude);
-                            this.listWithLat.push(element.latitude);
-                            this.listWithLng.push(element.longitude)
-
-                        }
+                        this.listWithTime.push(element.time);
+                        this.listWithPoz.push(element.latitude + "," + element.longitude);
+                        this.listWithLat.push(element.latitude);
+                        this.listWithLng.push(element.longitude)
                     }
-                    console.log(this.listWithTime)
+
+                    // Zamienienie listy z [x, 1, 2, 3, x, 1, 2] na [[1,2,3], [1,2]]
+                    const listOfArrays = [];
+                    var myArray = this.listWithTime.join("!").split("XX:XX:XX");
+                    myArray.shift();
+                    for (let index = 0; index < myArray.length; index++) {
+                        const element = myArray[index];
+                        var signsInArray = element.split("!");
+                        signsInArray.pop();
+                        signsInArray.shift();
+                        listOfArrays.push(signsInArray);
+                    }
+                    this.numOfPowerOn = listOfArrays.length;
+                    console.log(listOfArrays);
+
+                    // Wybranie odpowieniego czasu
+                    var availableTimes = "";
+                    for (let index = 0; index < listOfArrays.length; index++) {
+                        const element = listOfArrays[index];
+                        availableTimes += "Wpisz <b>" + index + "</b> By wybrac analizę od godziny: " + element[0] + " <br>"
+                        
+                    }
+                    document.getElementById("availableTimesId").innerHTML = availableTimes
+
+
+                    console.log(this.listWithTime);
+                    console.log(this.listWithPoz);
+                    console.log(this.listWithLng);
+                    console.log(this.listWithLat);
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     const date1 = new Date( this.myData + " " + this.listWithTime[0]);
                     const date2 = new Date(this.myData + " " + this.listWithTime.slice(-1)[0]);
@@ -209,7 +255,6 @@ export default {
         },
         stopPlayer() {
             this.toPlayer = "Zastopowałeś odtwarzanie, kliknij START!!";
-            console.log('kliknieto stop');
             for (let index = 0; index < this.timer2; index++) {
                 clearTimeout(index);
             }
@@ -223,9 +268,14 @@ export default {
             if (this.indexToStart == -1){
                 alert("Nie ma podanej godziny!")
             }
-            console.log("lista" + this.listWithTime)
-            
-
+        },
+        SelectMyTime() {
+            if (this.selectedTime == "" || this.selectedTime >= this.numOfPowerOn) {
+                alert("Wybierz poprawny czas")
+            } else {
+                this.AffterClickOnButtonTime = this.selectedTime;
+                this.isButtonToChooseTimeChecked = true;
+            }
         }
     }
 }
