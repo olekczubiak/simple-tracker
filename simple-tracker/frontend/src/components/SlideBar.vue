@@ -30,9 +30,30 @@
     </h6>
     <ul class="nav flex-column mb-2">
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <router-link to="/panel/calendar" class="nav-link">
         <span data-feather="file-text"></span>
-        Szukaj po dniu
+        Kalendarz
+        </router-link>
+    </li>
+    </ul>
+
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+    <span>Akcje</span>
+    <a class="link-secondary" href="#" aria-label="Add a new report">
+        <span data-feather="plus-circle"></span>
+    </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+    <li v-if="isLogin==false" class="nav-item">
+        <router-link class="nav-link" to="/login">
+        <span data-feather="file-text"></span>
+        Zaloguj!
+        </router-link>
+    </li>
+    <li v-if="isLogin==true" class="nav-item">
+        <a v-on:click="logoutButton" class="nav-link">
+        <span data-feather="file-text"></span>
+        Wyloguj!
         </a>
     </li>
     </ul>
@@ -43,6 +64,25 @@
 <script>
 export default {
     name: 'slideBar',
+    data() {
+        return {
+            isLogin: Boolean,
+        }
+    },
+    created() {
+        const myToken = localStorage.getItem('user-token');
+        if (myToken == null) {
+            this.isLogin = false
+        } else {
+            this.isLogin = true
+        }
+    },
+    methods: {
+        logoutButton() {
+            localStorage.removeItem('user-token');
+            window.location.reload();
+        }
+    }
 }
 </script>
 
