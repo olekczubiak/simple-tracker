@@ -45,7 +45,7 @@ export default {
             localStorage.removeItem('user-token')
             // console.log('blad logowania')
         })
-        await router.push('/');
+        await router.push('/panel');
         }
         return {
         data,
