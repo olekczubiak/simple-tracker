@@ -161,7 +161,7 @@ export default {
                     var availableTimes = "";
                     for (let index = 0; index < listOfArrays.length; index++) {
                         const element = listOfArrays[index];
-                        availableTimes += "Wpisz <b>" + index + "</b> By wybrac analizę od godziny: " + element[0] + " <br>"
+                        availableTimes += "Wpisz <b>" + index + "</b> By wybrac analizę od godziny: <b>" + element[0] + "</b> <br>"
                         
                     }
                     document.getElementById("availableTimesId").innerHTML = availableTimes
