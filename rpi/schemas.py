@@ -12,5 +12,6 @@ class Device(BaseModel):
     owner: str = "Olek"
     description: str = "Default description"
 
-
+def my_dict(data, time, lat, lng):
+    return {"owner_id":0,"my_date":data ,"time":time,"longitude":lng,"latitude":lat}
 

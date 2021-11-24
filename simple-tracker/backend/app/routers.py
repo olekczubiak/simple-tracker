@@ -1,6 +1,8 @@
 from typing import Optional
+from app.models import Position
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from .database import get_db
 from datetime import date
@@ -36,6 +38,14 @@ async def get_day_listed(
     user_id = crud.get_owner_id_by_token(db, my_token=token)
     return crud.get_list_poz_by_day(db, user_id=user_id, my_day=day)
 
+@router.get("/api/list/monthly")
+async def get_all_events_in_month(  
+                            month: Optional[int],
+                            db: Session = Depends(get_db),
+                            token: str =  Depends(sec.oauth2_scheme)):
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return crud.get_list_of_events_in_month(db, user_id, month)
+
 @router.get("/api/device")
 async def device_info(
                         db: Session = Depends(get_db),
@@ -56,6 +66,20 @@ async def send_poz(
     else:
         user_id = crud.get_owner_id_by_token(db, my_token=token)
         return crud.create_position(db=db, item=item, user_id=user_id)
+
+@router.post("/api/add/more",  response_model=schemas.PositionSchema)
+async def send_poz(
+                            item: schemas.PositionList, 
+                            db: Session = Depends(get_db),
+                            token: str =  Depends(sec.oauth2_scheme)
+                            ):
+        for single_record in item.my_list:
+            # if crud.check_if_last_time_exist(db) == single_record.time:
+            #     raise HTTPException(status_code=409, detail="Conflict")
+            # else:
+            user_id = crud.get_owner_id_by_token(db, my_token=token)
+            crud.create_position(db=db, item=single_record, user_id=user_id)
+        return JSONResponse(status_code=200, content={"message": "Adding success"})
 
 @router.post("/token")
 async def login(
@@ -93,3 +117,4 @@ async def test_root(db: Session = Depends(get_db),
                     token: str =  Depends(sec.oauth2_scheme)):
     user_id = crud.get_owner_id_by_token(db, my_token=token)
     return user_id
+

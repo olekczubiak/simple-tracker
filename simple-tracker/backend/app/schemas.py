@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import date
 
-from typing import Optional
+from typing import List, Optional
 
 from uuid import UUID
 
@@ -35,3 +35,6 @@ class PositionSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class PositionList(BaseModel):
+    my_list: List[PositionSchema]
