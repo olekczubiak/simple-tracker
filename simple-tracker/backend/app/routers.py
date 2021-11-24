@@ -1,5 +1,4 @@
 from typing import Optional
-from app.models import Position
 from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from fastapi.responses import JSONResponse
