@@ -38,6 +38,14 @@ async def get_day_listed(
     user_id = crud.get_owner_id_by_token(db, my_token=token)
     return crud.get_list_poz_by_day(db, user_id=user_id, my_day=day)
 
+@router.get("/api/list/monthly")
+async def get_all_events_in_month(  
+                            month: Optional[int],
+                            db: Session = Depends(get_db),
+                            token: str =  Depends(sec.oauth2_scheme)):
+    user_id = crud.get_owner_id_by_token(db, my_token=token)
+    return crud.get_list_of_events_in_month(db, user_id, month)
+
 @router.get("/api/device")
 async def device_info(
                         db: Session = Depends(get_db),
@@ -109,3 +117,4 @@ async def test_root(db: Session = Depends(get_db),
                     token: str =  Depends(sec.oauth2_scheme)):
     user_id = crud.get_owner_id_by_token(db, my_token=token)
     return user_id
+

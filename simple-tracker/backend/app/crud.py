@@ -1,7 +1,10 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql.elements import True_
+from sqlalchemy.sql.functions import user
 from sqlalchemy.sql.sqltypes import Float
+from sqlalchemy import extract  
+
 
 from . import models, schemas
 
@@ -26,6 +29,15 @@ def get_last_index_of_id(db: Session) -> int:
 def get_list_poz_by_day(db: Session, user_id: int, my_day: str):
     return db.query(models.Position).filter(models.Position.owner_id == user_id).filter(models.Position.my_date == my_day).all()
 
+def get_list_of_events_in_month(db: Session, user_id:int, my_month: int):
+    list_of_days = []
+    daily_separator = "XX:XX:XX"
+    for day in range(1,31):
+        month = db.query(models.Position).filter(models.Position.owner_id == user_id).filter(extract('month', models.Position.my_date)==my_month).filter(extract('day', models.Position.my_date)==day).filter(models.Position.time == daily_separator).all()
+        if len(month) > 0:
+            list_of_days.append({"Day": day, "Num": len(month)})
+    return list_of_days
+    # return db.query(models.Position).filter(models.Position.owner_id == user_id).filter(extract('month', models.Position.my_date)==my_month).all()
 
 def create_position(db: Session, item: schemas.PositionSchema, user_id:int):
     db_item = models.Position(
