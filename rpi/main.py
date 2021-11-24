@@ -38,7 +38,7 @@ def single_send():
 
 
 def sixty_send():
-	# requester.send_data(URL, ACCESS_TOKEN, TODAY_DATE[:10], "XX:XX:XX", 0 , 0)
+	requester.send_data(URL, ACCESS_TOKEN, TODAY_DATE[:10], "XX:XX:XX", 0 , 0)
 	n = 0
 	my_fake_db = []
 	while True:
