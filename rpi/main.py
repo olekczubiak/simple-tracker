@@ -58,15 +58,15 @@ def sixty_send():
 				pass
 			else:
 				my_fake_db.append(schemas.my_dict(TODAY_DATE[:10], date[11:19], lat, lng))
-				# print(schemas.my_dict(TODAY_DATE[:10], date[11:19], lat, lng))
 				n += 1
 				if n >= 60:
 					n = 0
-					# print("Wysylanie po osiagniejciu liczby 60")
-					# print my_fake_db
 					requester.send_more_data(URL + "/more", ACCESS_TOKEN, my_fake_db)
 					my_fake_db = []
-					# print my_fake_db
 				# requester.send_data(URL, ACCESS_TOKEN, TODAY_DATE[:10], date[11:19], lat, lng)
 			print "\n"
 			print_data(date, lat, lng, speed)
+
+print "Turn on interactive python with -i flag (python -i main.py)"
+print "single_send() - to single start"
+print "sixty_send() - to multiply start"
