@@ -11,6 +11,17 @@ TODAY_DATE = str(datetime.datetime.now())
 URL = "https://tracker.toadres.pl/api/add"
 ACCESS_TOKEN = '48cdcb6f7300a42157e9a78db71b7cc103609b7584dcffc12ca20605110b8e67'
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def print_data(date, lat, lng, speed):
 	print("Date=\x1b[2;34;40m" + date + "\x1b[0m and Latitude=\x1b[3;31;40m" + str(lat) + "\x1b[0m and Longitude=\x1b[3;31;40m" + str(lng) + "\x1b[0m Speed=\x1b[1;33;40m" + str(speed) + "\x1b[0m")
 
@@ -67,6 +78,7 @@ def sixty_send():
 			print "\n"
 			print_data(date, lat, lng, speed)
 
-print "Turn on interactive python with -i flag (python -i main.py)"
-print "single_send() - to single start"
-print "sixty_send() - to multiply start"
+
+print "Turn on interactive python with -i flag (" + bcolors.WARNING + "python -i main.py" + bcolors.ENDC + ")"
+print bcolors.OKBLUE + "single_send()" + bcolors.ENDC + " - to single start"
+print bcolors.OKCYAN + "sixty_send()" + bcolors.ENDC + " - to multiply start"
