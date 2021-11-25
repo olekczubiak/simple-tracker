@@ -12,10 +12,10 @@ def get_device_info(db: Session, user_id: int):
     return db.query(models.Device).filter(models.Device.owner_id == user_id).all()
 
 def get_position(db: Session, user_id: int):
-    return db.query(models.Position).filter(models.Position.owner_id == user_id).all()
+    return db.query(models.Position).filter(models.Position.owner_id == user_id).order_by(models.Position.id).all()
 
 def get_live_position(db: Session, user_id: int):
-    return db.query(models.Position).filter(models.Position.owner_id == user_id).all()[-1]
+    return db.query(models.Position).filter(models.Position.owner_id == user_id).order_by(models.Position.id.desc()).all()[0]
 
 def get_owner_id_by_email(db: Session, email: str):
     return db.query(models.User.id).filter(models.User.email == email).first()[0]
