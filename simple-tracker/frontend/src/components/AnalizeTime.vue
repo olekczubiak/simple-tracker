@@ -86,7 +86,7 @@ export default {
     data() {
         return {
             // Po testach datę trzeba usunać!!!!
-            myData: "2021-11-25", 
+            myData: "2021-10-30", 
             firstDayRecord: "",
             lastDayRecord: "",
             workingTime: "",
@@ -291,11 +291,59 @@ export default {
             }
         },
         turnOnTheMap() {
-                const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                const min = parseInt(this.workingTime.substring(0, 2))
+                if (min > 5) {
+                    const result = []
+                    const cnList = []
+                    const N = 19;
+                    const num = this.listWithTime[this.AfterClickOnButtonTime].length
+                    const cn = Math.floor(num/N)
 
-                let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
-                document.getElementById("route-map-content").innerHTML = mapIframe;
-                document.getElementById("button-to-turn-on-the-map").innerHTML = "";
+                    for (let index = 0; index < num; index++) {
+                        if (index % cn == 0) {
+                            cnList.push(index);
+                        }
+                    }
+
+                    for (let index = 0; index < this.listWithTime[this.AfterClickOnButtonTime].length; index++) {
+                        if (index in cnList) {
+                            result.push(this.listWithPoz[this.AfterClickOnButtonTime][index]);
+                        }
+                        
+                    }
+
+                    if (result.length > 20) {
+                        alert("Błąd w algorytmie obliczającym waypointy");
+                    }
+
+                    let myStringWithWaypoints = "&waypoints="
+                    for (let index = 0; index < result.length; index++) {
+                        const element = result[index];
+                        myStringWithWaypoints += element;
+                        myStringWithWaypoints += "|";
+                    }
+                    myStringWithWaypoints = myStringWithWaypoints.slice(0, -1)
+
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + myStringWithWaypoints +  "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                    let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                    document.getElementById("route-map-content").innerHTML = mapIframe;
+                    document.getElementById("button-to-turn-on-the-map").innerHTML = "";
+
+                    // To debug
+                    // console.log("My string to url" + myStringWithWaypoints)
+                    // console.log("result = " + result)
+                    // console.log("N = " + N)
+                    // console.log("num = " + num)
+                    // console.log("cn = " + cn)
+                    // console.log("cn_list = " + cnList)
+                    // console.log("result  lenght = " + result.length)
+                } else {
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+
+                    let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                    document.getElementById("route-map-content").innerHTML = mapIframe;
+                    document.getElementById("button-to-turn-on-the-map").innerHTML = "";
+                }
         }
     }
 }
