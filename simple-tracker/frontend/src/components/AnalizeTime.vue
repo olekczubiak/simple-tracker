@@ -30,6 +30,13 @@
                         <p> Pierwszy rekord dnia: <b>{{firstDayRecord}}</b></p>
                         <p> Ostatni rekord dnia: <b>{{lastDayRecord}}</b></p>
                     </div>
+                    <div v-if="checked == true" >
+                        <div id="route-map-content"></div>
+                        <!-- <p> To jest mapa</p> -->
+                        <div id="button-to-turn-on-the-map">
+                            <button class="w-100 btn btn-lg btn-primary" @click="turnOnTheMap">Włącz mapę</button>
+                        </div>
+                    </div>
                     
 
                 </div>
@@ -79,7 +86,7 @@ export default {
     data() {
         return {
             // Po testach datę trzeba usunać!!!!
-            myData: "2021-11-13", 
+            myData: "2021-10-30", 
             firstDayRecord: "",
             lastDayRecord: "",
             workingTime: "",
@@ -113,7 +120,7 @@ export default {
             const myToken = localStorage.getItem('user-token');
             const myLink = "https://tracker.toadres.pl/api/list/day?day=" + this.myData;
 
-            const getDailyPoz = fetch(myLink, {
+            fetch(myLink, {
                 method: 'GET',
                 headers: {
                     'accept': 'application/json',
@@ -211,7 +218,7 @@ export default {
                                     , i * 1200 * (1/this.selectedSpeed));
                     });
                 } else {
-                    for (let index = 0; index < this.timer2; index++) {
+                    for (let index = 0; index < this.timer2 + this.timer1; index++) {
                         clearTimeout(index);
                     }
                     this.listWithTime[this.AfterClickOnButtonTime].slice(this.indexToStart, this.listWithTime[this.AfterClickOnButtonTime].length).forEach((element,i) => {
@@ -240,7 +247,7 @@ export default {
         },
         resetPlayer() {
             this.toPlayer = "Przerwałeś odtwarzać, kliknij START!!";
-            for (let index = 0; index < this.timer2; index++) {
+            for (let index = 0; index < this.timer2 + this.timer1; index++) {
                 clearTimeout(index);
             }
             this.playerTime = "";
@@ -249,7 +256,7 @@ export default {
         },
         stopPlayer() {
             this.toPlayer = "Zastopowałeś odtwarzanie, kliknij START!!";
-            for (let index = 0; index < this.timer2; index++) {
+            for (let index = 0; index < this.timer2 + this.timer1; index++) {
                 clearTimeout(index);
             }
 
@@ -281,13 +288,62 @@ export default {
 
                 this.firstDayRecord = "Godzina: " + this.listWithTime[this.AfterClickOnButtonTime][0] + " latitude: " + this.listWithLat[this.AfterClickOnButtonTime][0] + " longitude: " + this.listWithLng[this.AfterClickOnButtonTime][0];
                 this.lastDayRecord = "Godzina: " + this.listWithTime[this.AfterClickOnButtonTime].slice(-1)[0] + " latitude: " + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + " longitude: " + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0];
-
-                // let map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
-                // // const map = "//www.google.com/maps/embed/v1/place?key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk&q=głowno"
-
-                // let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
-                // document.getElementById("route-map-content").innerHTML = mapIframe;
             }
+        },
+        turnOnTheMap() {
+                const min = parseInt(this.workingTime.substring(0, 2))
+                if (min > 5) {
+                    const result = []
+                    const cnList = []
+                    const N = 19;
+                    const num = this.listWithTime[this.AfterClickOnButtonTime].length
+                    const cn = Math.floor(num/N)
+
+                    for (let index = 0; index < num; index++) {
+                        if (index % cn == 0) {
+                            cnList.push(index);
+                        }
+                    }
+
+                    for (let index = 0; index < this.listWithTime[this.AfterClickOnButtonTime].length; index++) {
+                        if (index in cnList) {
+                            result.push(this.listWithPoz[this.AfterClickOnButtonTime][index]);
+                        }
+                        
+                    }
+
+                    if (result.length > 20) {
+                        alert("Błąd w algorytmie obliczającym waypointy");
+                    }
+
+                    let myStringWithWaypoints = "&waypoints="
+                    for (let index = 0; index < result.length; index++) {
+                        const element = result[index];
+                        myStringWithWaypoints += element;
+                        myStringWithWaypoints += "|";
+                    }
+                    myStringWithWaypoints = myStringWithWaypoints.slice(0, -1)
+
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + myStringWithWaypoints +  "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+                    let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                    document.getElementById("route-map-content").innerHTML = mapIframe;
+                    document.getElementById("button-to-turn-on-the-map").innerHTML = "";
+
+                    // To debug
+                    // console.log("My string to url" + myStringWithWaypoints)
+                    // console.log("result = " + result)
+                    // console.log("N = " + N)
+                    // console.log("num = " + num)
+                    // console.log("cn = " + cn)
+                    // console.log("cn_list = " + cnList)
+                    // console.log("result  lenght = " + result.length)
+                } else {
+                    const map = "//www.google.com/maps/embed/v1/directions?origin=" + this.listWithLat[this.AfterClickOnButtonTime][0]+ "," + this.listWithLng[this.AfterClickOnButtonTime][0] + "&destination=" + this.listWithLat[this.AfterClickOnButtonTime].slice(-1)[0] + "," + this.listWithLng[this.AfterClickOnButtonTime].slice(-1)[0] + "&key=AIzaSyCFcWFS_zSfHFCh5HV7qIwFrx_uwrfV5Kk";
+
+                    let mapIframe = "<iframe width=\"600\" height=\"450\" style=\"border:0\" allowfullscreen src=" + map + ">";
+                    document.getElementById("route-map-content").innerHTML = mapIframe;
+                    document.getElementById("button-to-turn-on-the-map").innerHTML = "";
+                }
         }
     }
 }

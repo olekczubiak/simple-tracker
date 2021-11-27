@@ -9,7 +9,7 @@
         Live
         </strong>
         <h3 class="mb-0">
-        {{deviceName}} {{deviceGpsName}}
+        {{deviceName}} | {{deviceGpsName}}
         </h3>
         <div class="mb-1 text-muted">
         Data i czas ostatniej aktualizacji: {{liveDate}} {{liveTime}}
