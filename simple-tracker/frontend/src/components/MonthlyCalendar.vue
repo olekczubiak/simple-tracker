@@ -54,6 +54,11 @@ export default {
     },
     methods: {
         getEventsFromMonth() {
+            if (this.items.length == 0) {
+                // empty
+            } else {
+                this.items = [];
+            }
             const indexofMonth = this.monthSelected.indexOf(this.month) + 1;
             const myToken = localStorage.getItem('user-token');
             fetch('https://tracker.toadres.pl/api/list/monthly?month=' + indexofMonth, {
@@ -73,15 +78,6 @@ export default {
                     this.active = true
                 }
             });
-            console.log(this.itemschro, )
-            // for (let index = 0; index < deviceData.length; index++) {
-            //     const element = deviceData[index];
-            //     this.device = element.device_name;
-            //     this.gps = element.gps_name;
-            //     this.ownerId = element.owner_id;
-            //     this.desc = element.description;
-            // }
-            // console.log(indexofMonth)
         }
     }
 
