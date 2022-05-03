@@ -5,6 +5,7 @@ from typing import List, Optional
 
 from uuid import UUID
 
+
 class UserSchema(BaseModel):
     id: int
     email: str
@@ -14,6 +15,7 @@ class UserSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class DeviceSchema(BaseModel):
     id: int
@@ -25,6 +27,7 @@ class DeviceSchema(BaseModel):
     class Config:
         orm_mode = True
 
+
 class PositionSchema(BaseModel):
     # id: UUID
     owner_id: int
@@ -35,6 +38,7 @@ class PositionSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class PositionList(BaseModel):
     my_list: List[PositionSchema]

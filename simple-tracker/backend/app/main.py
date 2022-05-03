@@ -8,14 +8,13 @@ app = FastAPI(
     description="API for monitoring and analyzing vehicle traffic. The project is part of the thesis.",
     author="Aleksander Czubiak",
     version="0.1",
-    docs_url = "/docs"
+    docs_url="/docs",
 )
 
 
 origins = [
     "https://tracker.toadres.pl/",
-    "http://tracker.toadres.pl/"
-    "http://localhost",
+    "http://tracker.toadres.pl/" "http://localhost",
     "http://localhost:8080",
 ]
 
